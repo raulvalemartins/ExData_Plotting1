@@ -1,13 +1,16 @@
-##      its necessary to install the 'data.table' package.
+##      its necessary to install the 'data.table' and 'lubridate' packages.
 ## 
 ##      install.packages("data.table")
-##      
+##      install.packages("lubridate")
+##         
 
-plot1 <- function () {
+plot2 <- function () {
         
-        
+
         library("data.table")
-
+        library("lubridate")
+        
+        
         df <- fread("household_power_consumption.txt", header = TRUE, 
                        sep = ";", na.strings = c("?", ""), 
                     data.table = FALSE, colClasses = "character", 
@@ -20,9 +23,14 @@ plot1 <- function () {
                                                 as.numeric(df[, 3 ]), as.numeric(df[, 4 ]),
                                                 as.numeric(df[, 5 ]), as.numeric(df[, 6 ]), 
                                                 as.numeric(df[, 7 ]), as.numeric(df[, 8 ]),
-                                                as.numeric(df[, 9 ]) ) )
+                                                as.numeric(df[, 9 ]),
+                                                dmy_hms(paste(df[,1], df[,2], sep = " ")) ) )
         
-        names(myData) <- headers 
+        
+        
+        
+        names(myData) <- c(headers, "TT" )
+        
         
         good <- complete.cases(myData)
         
@@ -32,10 +40,10 @@ plot1 <- function () {
                                      myData$Date >= as.Date( "01022007",  "%d%m%Y") & 
                                      myData$Date <= as.Date( "02022007",  "%d%m%Y"))
         
-        png("plot1.png", width = 480, height = 480)
+        png("plot2.png", width = 480, height = 480)
         
-        g <- hist(myData$Global_active_power, col = "RED", 
-                  main = "Global Active Power", xlab = "Global Active Power (kilowatts)" )
+        plot(myData$TT, myData$Global_active_power, type = "l", ylab = "Global Active Power (kilowatts)", xlab = "")
+        
         dev.off()
         
         myData        
